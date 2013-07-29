@@ -4,7 +4,7 @@ include:
   - makina-states.services.db.postgresql.hooks
 
 {% import "makina-states/services/db/postgresql/init.sls" as pgsql with context %}
-{% import "makina-projects/{0}/task_read_roles.sls".format(cfg.name) as roles with context %}
+{% import "makina-projects/{0}/include/read_roles.sls".format(cfg.name) as roles with context %}
 
 {% for dbext in data.databases %}
 {% for db, dbdata in dbext.items() %}
