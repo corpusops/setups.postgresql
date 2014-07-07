@@ -48,8 +48,10 @@ pgtune-{{cfg.name}}:
     - mode: 755
     - group: user
     - group: root
+    - watch:
+      - mc_proxy: makina-postgresql-post-pkg
     - watch_in:
-      - mc_proxy: makina-postgresql-pre-base
+      - mc_proxy: makina-postgresql-presetup
       - service: reload-sysctls-{{cfg.name}}
 {% endif %}
 {% if grains['os'] in ['Ubuntu'] %}
