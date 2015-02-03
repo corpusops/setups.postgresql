@@ -19,7 +19,6 @@ makina-projects.projectname:
     keep_weeks: '2'
     keep_logs: '7'
     mail: sysadmin@foo.com
-    pgver: 9.3
     domain: "www.{name}.loc"
 # uncomment in pillar and add any setting
 # you can start to tune with pgtune (apt-get install pgtune)

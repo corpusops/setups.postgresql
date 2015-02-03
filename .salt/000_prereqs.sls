@@ -1,6 +1,7 @@
 {% set cfg = opts.ms_project %}
+{% set cfg = opts.ms_project %}
 {% set data = cfg.data %}
-{% set ver = data.pgver%}
+{% set ver = pgsql.version %}
 {% set db = cfg.data.db %}
 include:
   - makina-states.services.gis.postgis
@@ -17,7 +18,7 @@ include:
 pgrouting-{{cfg.name}}:
   pkg.latest:
     - pkgs:
-      - postgresql-9.3-pgrouting
+      - postgresql-{{ver}}-pgrouting
     - watch:
       - pkgrepo: ubuntugis-pgrouting-base
 
