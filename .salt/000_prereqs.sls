@@ -1,6 +1,7 @@
 {% set cfg = opts.ms_project %}
 {% set cfg = opts.ms_project %}
 {% set data = cfg.data %}
+{% set pgsql = salt['mc_pgsql.settings']() %}
 {% set ver = pgsql.version %}
 {% set db = cfg.data.db %}
 include:

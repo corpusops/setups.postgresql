@@ -6,7 +6,7 @@ include:
 {% for dbext in data.databases %}
 {% for db, dbdata in dbext.items() %}
 {{ pgsql.postgresql_db(db, template="postgis", wait_for_template=False) }}
-{{ pgsql.postgresql_user(dbdata.user, password=dbdata.password, db=db) }}
+{{ pgsql.postgresql_user(dbdata.user, password=dbdata.password, db=db, suf=db) }}
 {{ pgsql.install_pg_ext('hstore', db) }}
 {%endfor %}
 {%endfor%}
