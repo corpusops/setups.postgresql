@@ -39,9 +39,15 @@ makina-projects.projectname:
 # shmall: valueInBytes*1024/4096
       - kernel.shmall: null
       - kernel.shmmax: null
+    #users:
+    #  - user: {kwargs to macro}
+    #groups:
+    #  - user: {kwargs to macro}
     databases:
       - db1:
+          # db password
           password: "{password}"
+          # db owner
           user: db1
 
 # vim:set ft=yaml:
