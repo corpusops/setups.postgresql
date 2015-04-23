@@ -2,10 +2,9 @@
 {% set groups = {} %}
 
 {% for usersdict in data.get('users', []) %}
-{% for user, data in usersdict %}
+{% for user, data in usersdict.items() %}
 {% set userd = users.setdefault(user, {}) %}
-{% do users.update(user,
-                   salt['mc_utils.dictupdate'](userd, data)) %}
+{% do users.update({user: salt['mc_utils.dictupdate'](userd, data)}) %}
 {% endfor %}
 {% endfor %}
 
@@ -31,8 +30,10 @@
 {% do usergroups.append(o) %}
 {% endif %}
 {% endif %}
+{% if dbdata.get('password') %}
 {% do users.update({
   dbdata.user: salt['mc_utils.dictupdate'](
              userd, {'password': dbdata.password})}) %}
+{% endif %}
 {% endfor %}
 {% endfor %}
