@@ -1,4 +1,6 @@
 # override retention policy not to conflict with mastersalt
+include:
+  - makina-states.services.backup.dbsmartbackup
 {% set cfg = opts.ms_project %}
 {% set settings = salt['mc_dbsmartbackup.settings']() %}
 {% set data = cfg.data %}
