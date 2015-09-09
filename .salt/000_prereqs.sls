@@ -21,7 +21,7 @@ pgrouting-{{cfg.name}}:
     - pkgs:
       - postgresql-{{ver}}-pgrouting
     - watch:
-      - pkgrepo: ubuntugis-pgrouting-base
+      - pkg: ubuntugis-pkgs
 
 {%for dsysctl in data.sysctls %}
 {%for sysctl, val in dsysctl.items() %}
