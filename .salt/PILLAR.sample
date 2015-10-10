@@ -15,7 +15,7 @@ makina-projects.projectname:
   data:
     keep_days: '17'
     keep_lasts: '21'
-    keep_monthes: '3'
+    keep_monthes: '1'
     keep_weeks: '2'
     keep_logs: '7'
     mail: sysadmin@foo.com
