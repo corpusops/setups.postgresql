@@ -48,6 +48,7 @@ pgtune-{{cfg.name}}:
                 {{o}}
                 {% endfor %}
     - mode: 755
+    - makedirs: true
     - group: user
     - group: root
     - watch:
