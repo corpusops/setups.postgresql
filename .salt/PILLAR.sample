@@ -50,5 +50,4 @@ makina-projects.projectname:
           password: "{password}"
           # db owner
           user: db1
-
 # vim:set ft=yaml:

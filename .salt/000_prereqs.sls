@@ -1,5 +1,4 @@
 {% set cfg = opts.ms_project %}
-{% set cfg = opts.ms_project %}
 {% set data = cfg.data %}
 {% set pgsql = salt['mc_pgsql.settings']() %}
 {% set ver = pgsql.version %}
@@ -7,6 +6,9 @@
 include:
   - makina-states.services.gis.postgis
   - makina-states.services.gis.ubuntugis
+  - makina-states.services.backup.dbsmartbackup
+
+
 
 {% set pkgssettings = salt['mc_pkgs.settings']() %}
 {% if grains['os_family'] in ['Debian'] %}
@@ -65,3 +67,31 @@ reload-sysctls-{{cfg.name}}:
     - watch:
       - mc_proxy: makina-postgresql-pre-base
 {% endif %}
+
+{# backup #}
+{% set dsb = salt['mc_dbsmartbackup.settings']() %}
+{% for i in dsb.types %}
+/etc/dbsmartbackup/{{i}}.conf.local:
+  file.managed:
+    - contents: |
+                KEEP_LASTS="{{data.keep_lasts}}"
+                KEEP_DAYS="{{data.keep_days}}"
+                KEEP_WEEKS="{{data.keep_weeks}}"
+                KEEP_MONTHES="{{data.keep_monthes}}"
+                KEEP_LOGS="{{data.keep_logs}}"
+    - mode: 644
+    - user: root
+    - group: root
+{% endfor %}
+
+/etc/db_smart_backup_deactivated:
+{% if cfg.default_env in ['dev'] or data.get('backup_disabled', False)%}
+  file.managed:
+    - mode: 644
+    - user: root
+    - group: root
+{%else %}
+  file.absent: []
+{% endif %}
+
+
