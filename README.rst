@@ -57,3 +57,28 @@ USE/Install With makina-states
     git fetch --all
     git push github master:prod
 
+
+Exemple pillar
+--------------
+::
+
+  makina-projects.pgsql:
+   data:
+    backup_disabled: false
+    pgver: 9.6
+    mail: sysadmin@foo.com
+    pg_optim:
+      #./pgtune/pgtune -i /etc/postgresql/9.5/main/postgresql.conf -M $((15842612*1024))
+      - default_statistics_target = 100
+      - maintenance_work_mem = 960MB
+      - checkpoint_completion_target = 0.9
+      - effective_cache_size = 11GB
+      - work_mem = 72MB
+      - shared_buffers = 3840MB
+    sysctls:
+      - kernel.shmall: 4026531840
+      - kernel.shmmax: 16106127360
+    databases:
+      - x:
+          password: "x"
+          user: x
