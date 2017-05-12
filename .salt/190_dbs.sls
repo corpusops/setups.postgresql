@@ -19,5 +19,8 @@ include:
   db, owner=o, template=t, wait_for_template=False, suf=db) }}
 {{ pgsql.postgresql_user(dbdata.user, **userdata)}}
 {{ pgsql.install_pg_ext('hstore', db) }}
+{% for i in dbdata.get('extensions', []) %}
+{{ pgsql.install_pg_ext(i, db) }}
+{% endfor %}
 {%endfor %}
 {%endfor%}
