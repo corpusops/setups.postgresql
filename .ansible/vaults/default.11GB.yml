@@ -1,0 +1,35 @@
+---
+# Remember to encrypt your vault with ansible-vault for non public env
+makinastates_pillar: |
+  ---
+  {% set project_name = 'pgsql' %}
+  {% if not grains %}{% set grains = {} %}{% endif %}
+  {% set fqdn = grains.get('fqdn', '{0}.local'.format(project_name)) %}
+  {% set domains = [fqdn,
+                    "{1}.{0}".format(fqdn, project_name),
+                    "www.{0}".format(fqdn)] %}
+  {% set pgver = "9.6" %}
+  makina-states.services.db.postgresql.version: "{{pgver}}"
+  makina-states.services.db.postgresql.versions-override: ["{{pgver}}"]
+  default_env: prod
+  makina-projects.{{project_name}}:
+     api_version: '2'
+     data:
+      backup_disabled: false
+      mail: sysadmin@foo.com
+      pgver: "{{pgver}}"
+      pg_optim:
+        - default_statistics_target = 50
+        - maintenance_work_mem = 960MB
+        - constraint_exclusion = on
+        - checkpoint_completion_target = 0.9
+        - effective_cache_size = 11GB
+        - work_mem = 96MB
+        - wal_buffers = 8MB
+        - shared_buffers = 3840MB
+        - max_connections = 80
+      #databases:
+      #  - xxx:
+      #      password: "xxxsecret"
+      #      user: xxx
+# vim:set ft=sls:
