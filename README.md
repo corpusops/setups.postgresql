@@ -43,9 +43,9 @@ This repository produces all those docker images:
 - Create the data dir & the ansible params file
   that will reconfigure postgresql before starting up
 
-    - See [defaults](/ansible/roles/postgresql/defaults/main.yml)
+    - See [defaults](/.ansible/roles/postgresql/defaults/main.yml)
     - We use here those volume
-        - a simple volume ``setup`` to share a configuration file to reconfure fles
+        - a simple volume ``setup`` to share a configuration file to reconfigure files
         - All other volumes may be [docker volumes](https://docs.docker.com/engine/admin/volumes/volumes/)
           as they need at first to be prepopulated from the image content.
 
@@ -85,7 +85,7 @@ cops_postgresql__privs:
 
 ```
 
-- If you need to tune pgsql, you can add something to ``reconfure.yml`` this way:
+- If you need to tune pgsql, you can add something to ``reconfigure.yml`` this way:
     ```yaml
     ---
     cops_postgresql_sysctls:
@@ -107,20 +107,21 @@ cops_postgresql__privs:
   your container restart, the scripts will apply your new setup.
 
 - On the first run, the ``data`` directory **MUST BE EMPTY**
-- To pull/run this image (PRODUCTION)
-- The folllowing command implicitly create 2 volumes against local directories and the goal
+- To pull & run this image (PRODUCTION) <br/>
+  Note that The folllowing command implicitly create 2 volumes against local directories and the goal
   is to prepopulate the directories from the image content on the first run.<br/>
   Indeed, the -v option does not feed host directories, even if empty from an image content.
 
     ```sh
     # docker pull corpusops/postgresql:<TAG>
     docker pull corpusops/postgresql:9.6.5
-    W="$(pwd)" N="my-postgresql-container" docker run \
+    N="my-postgresql-container"
+    docker run \
       --name=${N} \
       -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-      -v ${W}/local/setup:/setup:ro \
-      --mount volume-driver=local,volume-opt=type=none,volume-opt=device=${W}/local/data,volume-opt=o=bind,source=${N}-data,target=/srv/projects/postgresql/data \
-      --mount volume-driver=local,volume-opt=type=none,volume-opt=device=${W}/local/db,volume-opt=o=bind,source=${N}-db,target=/var/lib/postgresql \
+      -v $(pwd)/local/setup:/setup:ro \
+      --mount volume-driver=local,volume-opt=type=none,volume-opt=device=$(pwd)/local/data,volume-opt=o=bind,source=${N}-data,target=/srv/projects/postgresql/data \
+      --mount volume-driver=local,volume-opt=type=none,volume-opt=device=$(pwd)/local/db,volume-opt=o=bind,source=${N}-db,target=/var/lib/postgresql \
       --security-opt seccomp=unconfined \
       -P -d -i -t corpusops/postgresql:9.6.5
     ```
@@ -159,7 +160,7 @@ cops_postgresql__privs:
     ```
 
 ## ansible
-- Docker uses the [postgresql role](ansible/roles/postgresql) underthehood which
+- Docker uses the [postgresql role](.ansible/roles/postgresql) underthehood which
   is generic and is not docker specific.
 - You may use directly this role to provision postgresql on another host type.
 - This code the raw [corpusops.roles/postgresql role](https://github.com/corpusops/roles/tree/master/services_db_postgresql)
