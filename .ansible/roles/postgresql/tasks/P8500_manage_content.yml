@@ -1,0 +1,10 @@
+---
+- include_tasks: _role.yml
+  with_items: "{{cops_postgresql_vars._roles}}"
+  tags: [postgresql, postgresql_manage_content, postgresql_manage_roles]
+- include_tasks: _db.yml
+  with_items: "{{cops_postgresql_vars._databases}}"
+  tags: [postgresql, postgresql_manage_content, postgresql_manage_dbs]
+- include_tasks: _privs.yml
+  with_items: "{{cops_postgresql_vars._privs}}"
+  tags: [postgresql, postgresql_manage_content, postgresql_manage_privs]

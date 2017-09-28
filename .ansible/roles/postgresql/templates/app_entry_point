@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# {{ansible_managed}}
+set -ex
+export USE_INIT="${USE_INIT-}"
+export ENTRY_POINT="${IMAGE_ENTRY_POINT-{{cops_postgresql_ep_main_ep}}}"
+export RESTARTED_SERVICES="${RESTARTED_SERVICES-{{cops_postgresql_services|join(' ')}}}"
+
+# Reconfigure (extra-light reprovision) app from user volumes/env
+# The script will be certainly reexecuted a second time from
+# systemd (with different SKIPTAGS
+"{{cops_postgresql_reconfigure}}"
+# Launch app (via systemd)
+cd /
+if [[ -n ${USE_INIT-} ]];then
+    exec $ENTRY_POINT
+else
+    if [[ -z ${NO_RESTART-} ]];then
+        for i in $RESTARTED_SERVICES;do
+            systemctl restart $i
+        done
+    fi
+fi

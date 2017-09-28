@@ -1,0 +1,51 @@
+{
+  "images": [
+    {
+      "builder_type": "packer",
+      "version": "9.6.5",
+      "name": "postgis"
+    },
+    {
+      "builder_type": "packer",
+      "version": "9.5.9",
+      "name": "postgis"
+    },
+    {
+      "builder_type": "packer",
+      "version": "9.4.14",
+      "name": "postgis"
+    },
+    {
+      "builder_type": "packer",
+      "version": "9.3.19",
+      "name": "postgis"
+    },
+    {
+      "builder_type": "packer",
+      "version": "9.2.23",
+      "name": "postgis"
+    },
+
+
+    {
+      "builder_type": "packer",
+      "file": "9.6.5.json"
+    },
+    {
+      "builder_type": "packer",
+      "file": "9.5.9.json"
+    },
+    {
+      "builder_type": "packer",
+      "file": "9.4.14.json"
+    },
+    {
+      "builder_type": "packer",
+      "file": "9.3.19.json"
+    },
+    {
+      "builder_type": "packer",
+      "file": "9.2.23.json"
+    }
+  ]
+}

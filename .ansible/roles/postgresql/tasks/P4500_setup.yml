@@ -1,0 +1,30 @@
+---
+# Set any sysctl
+- include_tasks: _sysctl.yml
+  with_items: "{{cops_postgresql_vars.sysctls}}"
+  tags: [postgresql, system, postgresql_systctl]
+# Setup/Instal#l postgresql
+- include_role:
+    name: "corpusops.roles/services_db_postgresql"
+  tags: [postgresql,
+         do_setup, postgresql_do_setup,
+         do_postgresql_setup, postgresql_install]
+# Setup/Install postgis
+- include_role:
+    name: "corpusops.roles/services_db_postgis"
+  when: "cops_postgresql_vars.do_install_postgis"
+  tags: [postgresql,
+         do_setup, postgresql_do_setup,
+         do_postgis_setup, postgis_do_postgresql_setup]
+# install custom config files
+- name: configs
+  template:
+    dest: "{{item.dest}}"
+    src: "{{item.src|default('../templates{0}'.format(item.dest))}}"
+    force: "{{item.force|default(True)}}"
+    mode: "{{item.mode|default(omit)}}"
+    owner: "{{item.owner|default(omit)}}"
+    group: "{{item.group|default(omit)}}"
+  with_list: "{{cops_postgresql_vars.configs}}"
+  tags: [postgresql, configs, postgresql_configs]
+  notify: "{{cops_postgresql_vars.rhandlers}}"
