@@ -3,7 +3,9 @@
 - include_tasks: _sysctl.yml
   with_items: "{{cops_postgresql_vars.sysctls}}"
   tags: [postgresql, system, postgresql_systctl]
-# Setup/Instal#l postgresql
+# Setup/Install postgresql
+- set_fact:
+    corpusops_services_db_postgresql_version: "{{cops_postgresql_version}}"
 - include_role:
     name: "corpusops.roles/services_db_postgresql"
   tags: [postgresql,
