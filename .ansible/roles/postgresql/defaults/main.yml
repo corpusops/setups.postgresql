@@ -118,11 +118,12 @@ cops_postgresql_configs:
      mode: "0644",
      owner: "root",
      group: "root"}
-  - {src: "../templates/optim.conf",
-     dest: "/etc/postgresql/{{cops_postgresql_version}}/main/conf.d/optim.conf",
-     mode: "0644",
-     owner: "root",
-     group: "root"}
+  # use main pg.conf to be compatible with earlier pg version
+  #- {src: "../templates/optim.conf",
+  #   dest: "/etc/postgresql/{{cops_postgresql_version}}/main/conf.d/optim.conf",
+  #   mode: "0644",
+  #   owner: "root",
+  #   group: "root"}
 cops_postgresql_fixperms_configs:
   - {src: "../templates/fixperms.sh",
      dest: "{{cops_postgresql_fixperms}}", mode: "0755",
