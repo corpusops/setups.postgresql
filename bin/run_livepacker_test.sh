@@ -7,7 +7,7 @@ OW=$(pwd)
 W=$(cd "$(dirname $0)/.." && pwd)
 COPS_ROOT="$W/local/corpusops.bootstrap"
 if [[ -z ${SKIP_COPS-} ]] && [ ! -e "$COPS_ROOT" ];then
-    git clone https://github.com/corpusops.bootstrap "$COPS_ROOT"
+    git clone https://github.com/corpusops/corpusops.bootstrap "$COPS_ROOT"
 fi
 "$COPS_ROOT/hacking/docker_livepacker_test.sh" $@
 # vim:set et sts=4 ts=4 tw=80:
