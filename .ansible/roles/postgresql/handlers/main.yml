@@ -5,6 +5,7 @@
     state: restarted
     name: "{{item}}"
   with_items: "{{cops_postgresql_vars.services}}"
+  tags: [cops_postgresql_handlers, cops_postgresql_handlers_restart]
   when: "(cops_postgresql_vars.activated and
           corpusops_vars.has_services_manager and
           (ansible_service_mgr == 'systemd'))"
@@ -13,6 +14,7 @@
     state: restarted
     name: "{{item}}"
   with_items: "{{cops_postgresql_vars.services}}"
+  tags: [cops_postgresql_handlers, cops_postgresql_handlers_restart]
   when: "(cops_postgresql_vars.activated and
           corpusops_vars.has_services_manager and
           (ansible_service_mgr != 'systemd'))"
@@ -22,6 +24,7 @@
     state: reloaded
     name: "{{item}}"
   with_items: "{{cops_postgresql_vars.services}}"
+  tags: [cops_postgresql_handlers, cops_postgresql_handlers_reload]
   when: "(cops_postgresql_vars.activated and
           corpusops_vars.has_services_manager and
           (ansible_service_mgr == 'systemd'))"
@@ -30,6 +33,7 @@
     state: reloaded
     name: "{{item}}"
   with_items: "{{cops_postgresql_vars.services}}"
+  tags: [cops_postgresql_handlers, cops_postgresql_handlers_reload]
   when: "(cops_postgresql_vars.activated and
           corpusops_vars.has_services_manager and
           (ansible_service_mgr != 'systemd'))"
