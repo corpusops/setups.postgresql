@@ -1,0 +1,12 @@
+---
+- become: "{{cops_postgresql_vars.become}}"
+  block:
+  - include_tasks: roles/postgresql/tasks/P1000_users.yml
+  - assert:
+      that:
+        - "vars.get(varitem, none) is not none"
+      msg: "{{varitem}} must be set"
+    loop_control: {loop_var: varitem}
+    with_items: [cops_cwd]
+  - include_tasks: _push_code.yml
+    with_items: "{{cops_postgresql_vars.push_codes}}"

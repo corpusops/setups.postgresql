@@ -1,5 +1,0 @@
----
-- include_role:
-    name: corpusops.roles/postgresql_privs
-  vars:
-    _cops_postgresql_privs: "{{item}}"

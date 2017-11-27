@@ -75,6 +75,7 @@ install:
   - cd $COPS_ROOT
   - sh -c "$apply_role roles/corpusops.roles/localsettings_packer/role.yml"
   - sh -c "$apply_role roles/corpusops.roles/services_virt_docker/role.yml"
+  - cd "$TRAVIS_BUILD_DIR" && $silent bin/corpusops_install.sh
 script:
   - cd "$TRAVIS_BUILD_DIR" && $silent bin/build.sh --images $IMAGE
 after_success:
@@ -88,5 +89,4 @@ after_success:
 cache:
   directories:
     - $HOME/.cache/pip
-    - $COPS_ROOT
-
+    - $TRAVIS_BUILD_DIR/local

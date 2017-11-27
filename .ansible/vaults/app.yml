@@ -1,0 +1,3 @@
+---
+# copy this file instead of symlinking
+cops_postgresql_name: postgresql

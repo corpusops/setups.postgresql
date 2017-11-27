@@ -1,0 +1,27 @@
+---
+- service:
+    state: "{{cops_postgresql_vars.activated | ternary('started', 'stopped')}}"
+    enabled: "{{cops_postgresql_vars.activated | ternary(True, False)}}"
+    name: "{{item}}"
+  with_items: "{{cops_postgresql_vars.services}}"
+  when: "cops_postgresql_s_workers_service and corpusops_vars.has_services_manager"
+  tags: [cops_postgresql_s_workers_service]
+- systemd:
+    enabled: "{{cops_postgresql_vars.activated | ternary(True, False)}}"
+    daemon_reload: yes
+    name: "{{item}}"
+  with_items: "{{cops_postgresql_vars.reconfigure_services}}"
+  when: "cops_postgresql_s_workers_service and corpusops_vars.has_services_manager"
+  tags: [cops_postgresql_s_workers_service]
+# check pg is running
+- shell: |
+    echo "select 1"| psql -v ON_ERROR_STOP=1 -t -A -F",":
+  when: "(corpusops_vars.has_services_manager and
+          cops_postgresql_vars.activated)"
+  register: cops_postgresql_check
+  until: "'1' == cops_postgresql_check.stdout"
+  retries: 10
+  delay: 1
+  tags: [postgresql, workers_check, postgresql_workers_check]
+  become: true
+  become_user: postgres

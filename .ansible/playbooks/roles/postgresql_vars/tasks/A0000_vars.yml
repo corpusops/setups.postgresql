@@ -1,0 +1,44 @@
+---
+# compute some defaults
+- set_fact:
+    cacheable: false
+    # Set absolute path to app role (for templates path)
+    cops_postgresql_vrole_path: "{{role_path.replace('_vars', '')}}"
+# Set the cops_postgresql_vars var from defaults/main.yml
+- name: "postgresql registry init"
+  include_role: {name: corpusops.roles/vars_registry}
+  vars:
+    cops_vars_registry_target: cops_postgresql
+  tags: [postgresql, vars, postgresql_vars]
+  no_log: "{{not (cops_vars_debug|default(false))}}"
+
+# Generate passwords on remote box if not found in registry
+- name: "postgresql secrets -- {{postgresqlsecret}}}"
+  include_tasks: _set_secret_variable.yml
+  loop_control: {loop_var: postgresqlsecret}
+  with_items: "{{cops_postgresql_vars.secret_variables}}"
+  tags: [postgresql, vars, postgresql_vars]
+  no_log: "{{not (cops_vars_debug|default(false))}}"
+
+# Post process some variables
+- name: "postgresql registry - postprocess"
+  include_jinja_vars:
+    content: |
+      ---
+      {% set p = 'cops_postgresql_vars' %}
+      {% set _vars = {p: vars[p]} %}
+      {% set env = _vars[p].env %}
+      {% set _ = env.update(_vars[p].env_overrides) %}
+      {# filter user env #}
+      {% for i, val in vars.get('ansible_env', {}).items() %}
+      {%  if not i.startswith(
+              ('OLDPWD', 'CWD', 'PWD',
+               'TERM', 'USER', 'HOME', 'PS1',
+               'PATH', 'ANSIBLE', 'SSH', 'LS')) %}
+      {%    set _ = env.update({i: val})%}
+      {%  endif %}
+      {% endfor %}
+      {{ _vars | to_json }}
+  tags: [postgresql, vars, postgresql_vars]
+  no_log: "{{not (cops_vars_debug|default(false))}}"
+

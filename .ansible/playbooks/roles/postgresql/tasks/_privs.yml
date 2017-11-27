@@ -1,0 +1,5 @@
+---
+- debug: {msg: "{{priv_item}}"}
+  register: priv_itemr
+- include_role: {name: corpusops.roles/postgresql_privs}
+  vars: {_cops_postgresql_privs: "{{priv_itemr.msg}}"}

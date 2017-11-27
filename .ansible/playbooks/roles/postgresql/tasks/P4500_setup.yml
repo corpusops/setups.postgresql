@@ -1,0 +1,13 @@
+---
+- include_tasks: _setup_sysctls.yml
+  tags: [cops_postgresql_s_setup_sysctls]
+  when: "cops_postgresql_s_setup_sysctls"
+  notify: "{{cops_postgresql_vars.rhandlers}}"
+- include_tasks: _setup_server.yml
+  tags: [cops_postgresql_s_setup_server]
+  when: "cops_postgresql_s_setup_server"
+  notify: "{{cops_postgresql_vars.rhandlers}}"
+- include_tasks: _setup_configs.yml
+  tags: [cops_postgresql_s_setup_configs]
+  when: "cops_postgresql_s_setup_configs"
+  notify: "{{cops_postgresql_vars.rhandlers}}"

@@ -1,0 +1,13 @@
+---
+- name: configs
+  template:
+    dest: "{{item.dest}}"
+    src: "{{item.src|default('../templates{0}'.format(item.dest))}}"
+    mode: "{{item.mode|default(omit)}}"
+    force: "{{item.force|default(True)}}"
+    owner: "{{item.owner|default(omit)}}"
+    group: "{{item.group|default(omit)}}"
+    trim_blocks: "{{item.trim_blocks|default(False)}}"
+  with_list: "{{cops_postgresql_ep_configs}}"
+  tags: [cops_postgresql_s_entry_point]
+  when: "cops_postgresql_s_entry_point"

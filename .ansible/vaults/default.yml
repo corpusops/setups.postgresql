@@ -1,1 +1,4 @@
-default.11GB.yml
+---
+cops_app_name: postgresql
+cops_installer_mode: lazy
+# vim:set ft=sls:

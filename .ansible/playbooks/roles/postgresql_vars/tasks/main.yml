@@ -1,0 +1,4 @@
+---
+- include_tasks: A0000_vars.yml
+  tags: [postgresql, vars, postgresql_vars, cops_postgresql_s_vars]
+  when: "cops_postgresql_s_vars"

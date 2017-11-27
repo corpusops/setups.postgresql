@@ -4,13 +4,19 @@ log() { echo "${@}" >&2; }
 vv() { log "$@"; "$@"; }
 rsync $RSYNC_OPTS "$_P.in/" "$_P/" --exclude=local --delete-excluded
 export ANSIBLE_FORCE_COLOR=1 PYTHONUNBUFFERED=1
-lcops="$_P.in/local/corpusops.bootstrap/"
+lcops="$_P.in/local/corpusops.bootstrap"
 
 do_install() {
     cd "$_P"
+    local cops_path="${cops_path:-${COPS_ROOT}}"
+    local cops_playbooks=${cops_playbooks:-$cops_path/playbooks/corpusops/}
+    local cops_cwd="$(pwd)"
     $ANSIBLE_PLAYBOOK \
         $ANSIBLE_ARGS \
         -e @/tmp/ansible_params.yml \
+        -e "cops_cwd=$cops_cwd" \
+        -e "cops_path=$cops_path" \
+        -e "cops_playbooks=$cops_playbooks" \
         $ANSIBLE_FOLDER/$ANSIBLE_PLAY
 }
 apt update
@@ -21,14 +27,12 @@ do_up() {
 }
 use_local_cops() {
     set +x
-    if [ -e "$lcops" ];then
+    if [ -e "$lcops/.git/HEAD" ];then
         log "Local checkout of corpusops.bootstrap; using it"
-        for i in \
-            bin/ doc/ docker/ hacking/ LICENSE.txt \
-            playbooks/ README.md requirements/ roles/ setup.py src/ \
-            ;do
-            rsync -a "$lcops/$i" "$COPS_ROOT/$i"
-        done
+        vv rsync -a \
+            --exclude=**/local/** \
+            --exclude=**/venv/** \
+            "$lcops/" "$COPS_ROOT/"
     fi
     set -x
 }

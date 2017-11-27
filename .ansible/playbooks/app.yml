@@ -1,0 +1,46 @@
+---
+- hosts: "{{postgresql_servers|default('all')}}"
+  roles:
+    - role: corpusops.roles/ansible_plugins
+  tasks:
+    - include_tasks: tasks/load_vars.yml
+      tags: [cops_postgresql_lifecycle_app]
+      when: "cops_postgresql_lifecycle_app|default(true)"
+    - when: "cops_postgresql_lifecycle_app"
+      tags: [cops_postgresql_lifecycle_app]
+      become: true
+      block:
+      - become: true
+        become_user: postgres
+        block:
+          - shell: |
+              psql -t -A -F';;;' -c'\l'
+            failed_when: false
+            changed_when: false
+            register: cops_setup_databases_test1
+            no_log: true
+            become_user: postgres
+          - set_fact: {cops_test_no_db: false, cacheable: false}
+        rescue:
+          - set_fact: {cops_test_no_db: true,  cacheable: false}
+      - set_fact:
+          cacheable: false
+          cops_postgresql_lifecycle_app_setup: >-
+            (((not vars.get('SKIP_INSTALL_POSTGRESQL', False)) and
+             ((cops_test_no_db))) or
+               cops_postgresql_lifecycle_app|default(false) or
+             (vars.get('FORCE_INSTALL_POSTGRESQL', False)))
+
+- hosts: "{{postgresql_servers|default('all')}}"
+  tasks:
+    - tags: [cops_postgresql_lifecycle_app_push_code,cops_postgresql_lifecycle_app]
+      when: "cops_postgresql_lifecycle_app_push_code|default(cops_postgresql_lifecycle_app)"
+      block:
+      - include_tasks: tasks/lc_push_code.yml
+
+- hosts: "{{postgresql_servers|default('all')}}"
+  tasks:
+    - tags: [cops_postgresql_lifecycle_app_setup,cops_postgresql_lifecycle_app]
+      when: "cops_postgresql_lifecycle_app_setup|default(cops_postgresql_lifecycle_app)"
+      block:
+      - include_tasks: tasks/lc_app.yml

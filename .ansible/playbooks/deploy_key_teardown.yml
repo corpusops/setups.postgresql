@@ -1,0 +1,2 @@
+---
+- import_playbook: "{{cops_playbooks}}/provision/install/deploy_key_teardown.yml"

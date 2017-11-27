@@ -2,13 +2,13 @@
     "variables": {
         "_p": "/provision_dir",
         "ansible_playbook": "/srv/corpusops/corpusops.bootstrap/bin/ansible-playbook",
-        "ansible_args": "-vvvvv -c local -i localhost,",
+        "ansible_args": "-vvvvv -c local -i localhost, -e@.ansible/vaults/default.yml -e@.ansible/vaults/app.yml -e@.ansible/vaults/docker.yml",
         "DO_UP": "",
         "DO_CONTAINER_STRIP": "1",
         "docker_folder": ".docker",
         "salt_folder": ".salt",
         "ansible_folder": ".ansible",
-        "ansible_play": "site.yml",
+        "ansible_play": "playbooks/site_docker.yml",
         "tag": "corpusops/postgis:9.4.14",
         "img_entrypoint": "/entry_point",
         "entrypoint": "/app_entry_point",
@@ -53,7 +53,7 @@
             "ENTRYPOINT {{user `entrypoint`}}"
         ]
     }],
-    "provisioners":[
+    "provisioners": [
         {
             "type": "shell",
             "inline_shebang": "/bin/bash -ex",

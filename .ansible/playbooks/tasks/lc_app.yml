@@ -1,0 +1,4 @@
+---
+# compute app settings
+- include_role: {name: ./roles/postgresql}
+  become: "{{cops_postgresql_vars.become}}"

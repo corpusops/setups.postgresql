@@ -1,0 +1,14 @@
+---
+- group:
+    name: "{{cops_postgresql_vars.group}}"
+    state: present
+  tags: [cops_postgresql_s_users_group]
+  when: cops_postgresql_s_users_group
+- user:
+    group: "{{cops_postgresql_vars.group}}"
+    name: "{{cops_postgresql_vars.user}}"
+    state: present
+    append: true
+    generate_ssh_key: true
+  tags: [cops_postgresql_s_users_user]
+  when: cops_postgresql_s_users_user

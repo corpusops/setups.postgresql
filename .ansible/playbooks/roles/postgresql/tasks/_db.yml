@@ -1,0 +1,5 @@
+---
+- debug: {msg: "{{db_item}}"}
+  register: db_itemr
+- include_role: {name: corpusops.roles/postgresql_db}
+  vars: {_cops_postgresql_db: "{{db_itemr.msg}}"}

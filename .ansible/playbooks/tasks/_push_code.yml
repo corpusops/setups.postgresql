@@ -1,0 +1,4 @@
+---
+- import_tasks: "{{cops_playbooks}}/provision/push_code/main.yml"
+  vars:
+    _cops_provision_push_code: "{{item}}"
