@@ -1,14 +1,7 @@
 ---
 # install custom config files
-- name: configs
-  template:
-    dest: "{{item.dest}}"
-    src: "{{item.src|default('../templates{0}'.format(item.dest))}}"
-    force: "{{item.force|default(True)}}"
-    mode: "{{item.mode|default(omit)}}"
-    owner: "{{item.owner|default(omit)}}"
-    group: "{{item.group|default(omit)}}"
-    trim_blocks: "{{item.trim_blocks|default(False)}}"
-  with_list: "{{cops_postgresql_vars.configs}}"
+- include_role: {name: corpusops.roles/configs, private: true}
+  vars:
+    cops_configs_templates: "{{cops_postgresql_vars.configs}}"
+    cops_configs_notify: "{{cops_postgresql_vars.rhandlers}}"
   tags: [postgresql, configs, postgresql_configs]
-  notify: "{{cops_postgresql_vars.rhandlers}}"
