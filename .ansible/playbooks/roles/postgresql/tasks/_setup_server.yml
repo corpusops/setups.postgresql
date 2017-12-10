@@ -1,10 +1,5 @@
 ---
 # Setup/Install postgresql
-- set_fact:
-    cacheable: false
-    corpusops_services_db_postgresql_version: "{{cops_postgresql_version}}"
-    corpusops_services_db_postgresql_pg_conf_extras: "{{cops_postgresql_conf}}"
-
 - include_role: {name: "corpusops.roles/services_db_postgresql"}
   tags: [cops_postgresql_s_setup_server_postgresql]
   when: "cops_postgresql_s_setup_server_postgresql"
