@@ -11,7 +11,7 @@ env:
       funcs="$COPS_ROOT/bin/cops_shell_common" \
       silent="$funcs output_in_error silent_vv" \
       apply_role="sudo -E $silent $COPS_ROOT/bin/cops_apply_role -vvvvv" \
-      install="sudo -E $silent $COPS_ROOT/bin/install.sh" \
+      install="$silent $COPS_ROOT/bin/install.sh" \
       sync_code="$install -C --synchronize-code --skip-sync-core" \
       release="$COPS_ROOT/hacking/docker_release" \
       silent_rm="$silent rm -rf"
