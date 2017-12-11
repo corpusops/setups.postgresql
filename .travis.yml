@@ -68,6 +68,7 @@ before_install:
   - sudo service docker stop
   - "[ -e $COPS_ROOT/.git ] || git clone $COPS_URL $COPS_ROOT"
   - cd $COPS_ROOT
+  - i=$(whoami) && sudo chown -Rf $i $COPS_ROOT
   - git fetch origin && git reset --hard origin/master
   - $install -C -S
   - $sync_code || ( $silent_rm $COPS_ROOT/{roles,playbooks}/corpusops* && $sync_code )
