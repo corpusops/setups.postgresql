@@ -76,9 +76,14 @@ install:
   - cd $COPS_ROOT
   - sh -c "$apply_role roles/corpusops.roles/localsettings_packer/role.yml"
   - sh -c "$apply_role roles/corpusops.roles/services_virt_docker/role.yml"
-  - cd "$TRAVIS_BUILD_DIR" && $silent bin/corpusops_install.sh
+  - >
+    cd "$TRAVIS_BUILD_DIR"
+    && $silent .ansible/scripts/download_corpusops.sh
+    && $silent .ansible/scripts/setup_corpusops.sh
 script:
-  - cd "$TRAVIS_BUILD_DIR" && $silent bin/build.sh --images $IMAGE
+  - >
+    cd "$TRAVIS_BUILD_DIR"
+    && $silent .ansible/scripts/build_docker_images.sh --images $IMAGE
 after_success:
   - docker images
   - |
