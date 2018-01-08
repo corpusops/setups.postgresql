@@ -6,13 +6,12 @@ env:
     - |
       __NAME__="postgresql" \
       RELEASE_DEBUG="" \
+      NO_SHARED_COPS="1" \
       COPS_URL="https://github.com/corpusops/corpusops.bootstrap" \
       COPS_ROOT="$TRAVIS_BUILD_DIR/local/corpusops.bootstrap" \
       funcs="$COPS_ROOT/bin/cops_shell_common" \
       silent="$funcs output_in_error silent_vv" \
       apply_role="sudo -E $silent $COPS_ROOT/bin/cops_apply_role -vvvvv" \
-      install="$silent $COPS_ROOT/bin/install.sh" \
-      sync_code="$install -C --synchronize-code --skip-sync-core" \
       release="$COPS_ROOT/hacking/docker_release" \
       silent_rm="$silent rm -rf"
   matrix:
@@ -66,24 +65,13 @@ python: "2.7"
 before_install:
   - sudo apt-get update -qq
   - sudo service docker stop
-  - "[ -e $COPS_ROOT/.git ] || git clone $COPS_URL $COPS_ROOT"
-  - cd $COPS_ROOT
-  - i=$(whoami) && sudo chown -Rf $i $COPS_ROOT
-  - git fetch origin && git reset --hard origin/master
-  - $install -C -S
-  - $sync_code || ( $silent_rm $COPS_ROOT/{roles,playbooks}/corpusops* && $sync_code )
+  - .ansible/scripts/download_corpusops.sh
+  - $silent .ansible/scripts/setup_corpusops.sh
 install:
-  - cd $COPS_ROOT
-  - sh -c "$apply_role roles/corpusops.roles/localsettings_packer/role.yml"
-  - sh -c "$apply_role roles/corpusops.roles/services_virt_docker/role.yml"
-  - >
-    cd "$TRAVIS_BUILD_DIR"
-    && $silent .ansible/scripts/download_corpusops.sh
-    && $silent .ansible/scripts/setup_corpusops.sh
+  - sh -c "$apply_role $COPS_ROOT/roles/corpusops.roles/localsettings_packer/role.yml"
+  - sh -c "$apply_role $COPS_ROOT/roles/corpusops.roles/services_virt_docker/role.yml"
 script:
-  - >
-    cd "$TRAVIS_BUILD_DIR"
-    && $silent .ansible/scripts/build_docker_images.sh --images $IMAGE
+  - $silent .ansible/scripts/build_docker_images.sh --images $IMAGE
 after_success:
   - docker images
   - |
