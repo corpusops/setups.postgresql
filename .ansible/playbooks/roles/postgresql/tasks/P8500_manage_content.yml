@@ -1,16 +1,16 @@
 ---
 - include_tasks: _role.yml
   with_items: "{{cops_postgresql_vars._roles}}"
-  tags: [cops_postgresql_s_managecontent_roles]
   loop_control: {loop_var: role_item}
-  when: "cops_postgresql_s_managecontent_roles"
+  when: [cops_postgresql_s_managecontent_roles]
+  tags: [cops_postgresql_s_managecontent_roles]
 - include_tasks: _db.yml
   with_items: "{{cops_postgresql_vars._databases}}"
-  tags: [cops_postgresql_s_managecontent_databases]
   loop_control: {loop_var: db_item}
-  when: "cops_postgresql_s_managecontent_databases"
+  tags: [cops_postgresql_s_managecontent_databases]
+  when: [cops_postgresql_s_managecontent_databases]
 - include_tasks: _privs.yml
   with_items: "{{cops_postgresql_vars._privs}}"
   loop_control: {loop_var: priv_item}
   tags: [cops_postgresql_s_managecontent_privs]
-  when: "cops_postgresql_s_managecontent_privs"
+  when: [cops_postgresql_s_managecontent_privs]

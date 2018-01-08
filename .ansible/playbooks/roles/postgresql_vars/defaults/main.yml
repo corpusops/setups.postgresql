@@ -137,6 +137,7 @@ cops_postgresql_s_setup_server_postgis: true
 cops_postgresql_s_setup_server_postgresql: true
 cops_postgresql_s_setup_configs: true
 cops_postgresql_s_workers_service: true
+cops_postgresql_s_workers_checks: true
 cops_postgresql_s_end_fixperms: true
 cops_postgresql_s_managecontent: true
 cops_postgresql_s_managecontent_databases: true

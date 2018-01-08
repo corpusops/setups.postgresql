@@ -2,4 +2,4 @@
 # Set any sysctl
 - include_tasks: _sysctl.yml
   with_items: "{{cops_postgresql_vars.sysctls}}"
-  tags: [postgresql, system, postgresql_systctl]
+  tags: [postgresql_systctl]

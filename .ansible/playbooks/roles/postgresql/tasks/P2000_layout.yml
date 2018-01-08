@@ -11,4 +11,4 @@
     recurse: "{{item.recurse|default(omit)}}"
   with_items: "{{cops_postgresql_vars.files}}"
   tags: [cops_postgresql_s_layout_layout]
-  when: cops_postgresql_s_layout_layout
+  when: [cops_postgresql_s_layout_layout]

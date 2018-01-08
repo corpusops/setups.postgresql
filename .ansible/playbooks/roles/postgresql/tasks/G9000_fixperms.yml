@@ -10,12 +10,12 @@
     trim_blocks: "{{item.trim_blocks|default(False)}}"
   with_list: "{{cops_postgresql_vars.fixperms_configs}}"
   tags: [cops_postgresql_s_fixperms_configs]
-  when: cops_postgresql_s_fixperms_configs
+  when: [cops_postgresql_s_fixperms_configs]
 - name: run fixperms
   shell: "{{cops_postgresql_vars.fixperms}}"
   changed_when: false
   tags: [cops_postgresql_s_fixperms_run]
-  when: cops_postgresql_s_fixperms_run
+  when: [cops_postgresql_s_fixperms_run]
 - name: add fixperms cron
   copy:
     dest: "{{cops_postgresql_vars.fixperms_cron}}"
@@ -24,10 +24,12 @@
     content: |
       {{cops_postgresql_vars.fixperms_cron_periodicity}} root {{cops_postgresql_vars.fixperms}} >/dev/null 2>&1
   tags: [cops_postgresql_s_fixperms_configs]
-  when: "cops_postgresql_s_fixperms_configs and (cops_postgresql_vars.fixperms_cron_periodicity | copsf_bool)"
+  when: ["cops_postgresql_s_fixperms_configs and (
+      cops_postgresql_vars.fixperms_cron_periodicity | copsf_bool)"]
 - name: remove fixperms cron
   file:
     path: "{{cops_postgresql_vars.fixperms_cron}}"
     state: absent
   tags: [cops_postgresql_s_fixperms_configs]
-  when: "cops_postgresql_s_fixperms_configs and not (cops_postgresql_vars.fixperms_cron_periodicity | copsf_bool)"
+  when: ["cops_postgresql_s_fixperms_configs and not (
+      cops_postgresql_vars.fixperms_cron_periodicity | copsf_bool)"]

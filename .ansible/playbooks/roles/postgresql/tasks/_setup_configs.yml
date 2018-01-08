@@ -4,4 +4,4 @@
   vars:
     cops_configs_templates: "{{cops_postgresql_vars.configs}}"
     cops_configs_notify: "{{cops_postgresql_vars.rhandlers}}"
-  tags: [postgresql, configs, postgresql_configs]
+  tags: [postgresql_configs]
