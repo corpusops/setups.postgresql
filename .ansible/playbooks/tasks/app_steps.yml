@@ -46,7 +46,7 @@
           cops_postgresql_s_end_fixperms)}}"
   - set_fact:
       cacheable: false
-      cops_postgresql_lifecycle_app_push_code: "{{cops_postgresql_lifecycle_app|default(cops_postgresql_lifecycle_app_push_code|default(not only_steps))}}"
+      cops_postgresql_lifecycle_app_push_code: "{{cops_postgresql_lifecycle_app_push_code|default(cops_postgresql_lifecycle_app|default(not only_steps))}}"
       cops_postgresql_lifecycle_app_setup: "{{(cops_postgresql_lifecycle_app_setup|default(
                                                 (cops_postgresql_lifecycle_app|default(False)) or (
                                                   cops_postgresql_lifecycle_app_level_1_steps)))}}"
@@ -57,10 +57,4 @@
         cops_postgresql_lifecycle_app_setup)}}"
   - set_fact:
       cacheable: false
-      cops_postgresql_lifecycle_app_lc_1_steps: "{{(
-          cops_postgresql_lifecycle_app)}}"
-  - set_fact:
-      cacheable: false
-      cops_postgresql_s_vars: "{{cops_postgresql_s_vars|default(cops_postgresql_lifecycle_app_lc_1_steps)}}"
-
-
+      cops_postgresql_s_vars: "{{cops_postgresql_s_vars|default(cops_postgresql_lifecycle_app)}}"
