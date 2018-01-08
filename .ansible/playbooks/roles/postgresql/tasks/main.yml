@@ -1,28 +1,30 @@
 ---
-- include_tasks: P1000_users.yml
-  tags: [cops_postgresql_s_users]
-  when: [cops_postgresql_s_users]
-- include_tasks: P2000_layout.yml
-  tags: [cops_postgresql_s_layout]
-  when: [cops_postgresql_s_layout]
-- include_tasks: G9000_fixperms.yml
-  tags: [cops_postgresql_s_layout]
-  when: [cops_postgresql_s_first_fixperms]
-- include_tasks: P4000_prerequisites.yml
-  tags: [cops_postgresql_s_prerequisites]
-  when: [cops_postgresql_s_prerequisites]
-- include_tasks: P4500_setup.yml
-  tags: [cops_postgresql_s_setup]
-  when: [cops_postgresql_s_setup]
-- include_tasks: P8000_entry_point.yml
-  tags: [cops_postgresql_s_entry_point]
-  when: [cops_postgresql_s_entry_point]
-- include_tasks: P8200_workers.yml
-  tags: [cops_postgresql_s_workers]
-  when: [cops_postgresql_s_workers]
-- include_tasks: P8500_manage_content.yml
-  tags: [cops_postgresql_s_managecontent]
-  when: [cops_postgresql_s_managecontent]
-- include_tasks: G9000_fixperms.yml
-  tags: [cops_postgresql_s_end_fixperms]
-  when: [cops_postgresql_s_end_fixperms]
+- tags: [cops_postgresql, postgresql]
+  block:
+  - include_tasks: P1000_users.yml
+    tags: [cops_postgresql_s_users]
+    when: [cops_postgresql_s_users]
+  - include_tasks: P2000_layout.yml
+    tags: [cops_postgresql_s_layout]
+    when: [cops_postgresql_s_layout]
+  - include_tasks: G9000_fixperms.yml
+    tags: [cops_postgresql_s_layout]
+    when: [cops_postgresql_s_first_fixperms]
+  - include_tasks: P4000_prerequisites.yml
+    tags: [cops_postgresql_s_prerequisites]
+    when: [cops_postgresql_s_prerequisites]
+  - include_tasks: P4500_setup.yml
+    tags: [cops_postgresql_s_setup]
+    when: [cops_postgresql_s_setup]
+  - include_tasks: P8000_entry_point.yml
+    tags: [cops_postgresql_s_entry_point]
+    when: [cops_postgresql_s_entry_point]
+  - include_tasks: P8200_workers.yml
+    tags: [cops_postgresql_s_workers]
+    when: [cops_postgresql_s_workers]
+  - include_tasks: P8500_manage_content.yml
+    tags: [cops_postgresql_s_managecontent]
+    when: [cops_postgresql_s_managecontent]
+  - include_tasks: G9000_fixperms.yml
+    tags: [cops_postgresql_s_end_fixperms]
+    when: [cops_postgresql_s_end_fixperms]
