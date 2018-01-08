@@ -6,9 +6,8 @@ env:
     - |
       __NAME__="postgresql" \
       RELEASE_DEBUG="" \
-      NO_SHARED_COPS="1" \
       COPS_URL="https://github.com/corpusops/corpusops.bootstrap" \
-      COPS_ROOT="$TRAVIS_BUILD_DIR/local/corpusops.bootstrap" \
+      COPS_ROOT="$HOME/corpusops/corpusops.bootstrap" \
       funcs="$COPS_ROOT/bin/cops_shell_common" \
       silent="$funcs output_in_error silent_vv" \
       apply_role="sudo -E $silent $COPS_ROOT/bin/cops_apply_role -vvvvv" \
@@ -83,4 +82,4 @@ after_success:
 cache:
   directories:
     - $HOME/.cache/pip
-    - $TRAVIS_BUILD_DIR/local
+    - $HOME/corpusops
