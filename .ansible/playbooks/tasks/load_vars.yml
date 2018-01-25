@@ -1,4 +1,4 @@
 ---
 - include_tasks: "{{cops_playbooks}}/provision/{{cops_installer_mode}}/tasks/load_vars.yml"
 - {include_tasks: tasks/app_steps.yml}
-- {include_role: {name: postgresql_vars}, become: true}
+- {include_role: {name: postgresql_vars, allow_duplicates: false}, become: true}
