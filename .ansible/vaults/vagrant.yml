@@ -1,4 +1,4 @@
 ---
-cops_postgresql_domain: "{{cops_app_name}}.vbox.local"
+cops_postgresql_domain: "{{cops_postgresql_name}}.vbox.local"
 cops_installer_mode: vagrant
 cops_postgresql_ep_playbook: "site_vagrant.yml"

@@ -1,4 +1,14 @@
 ---
-cops_app_name: postgresql
+cops_db_name: db
+cops_db_user: user
+cops_db_password: secret
+cops_postgresql__roles:
+- name: "{{cops_db_user}}"
+  password: "{{cops_db_password}}"
+  privs: "{{cops_db_name}}.*"
+cops_postgresql__databases:
+- db: "{{cops_db_name}}"
+cops_postgresql_name: postgresql
+postgresql_servers: postgresql_servers
 cops_installer_mode: lazy
 # vim:set ft=sls:
