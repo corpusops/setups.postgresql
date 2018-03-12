@@ -7,6 +7,7 @@ cops_postgresql__roles:
   password: "{{cops_db_password}}"
 cops_postgresql__databases:
 - db: "{{cops_db_name}}"
+  owner: "{{cops_db_user}}"
 cops_postgresql_name: postgresql
 postgresql_servers: postgresql_servers
 cops_installer_mode: lazy
