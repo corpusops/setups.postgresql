@@ -18,9 +18,9 @@ cops_postgresql_conf: []
 # users than have full right to edit file in the container
 # When this is enabled, the project user/group is also granted full perms
 # (attention, uids!)
-cops_postgresql__supereditors_paths:
-  - "{{vars['cops_postgresql_project_root']}}"
-  - "{{vars['cops_postgresql_data_root']}}"
+cops_postgresql__supereditors_paths: []
+# - "{{vars['cops_postgresql_data_root']}}"
+# - "{{vars['cops_postgresql_project_root']}}"
 # space separated string of uids to allow to write inside
 # projetct directories (used in development through posix ACLS setter)
 cops_postgresql__supereditors: >-

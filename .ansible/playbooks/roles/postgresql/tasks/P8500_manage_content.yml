@@ -1,4 +1,18 @@
 ---
+- include_role: {name: "corpusops.roles/services_db_postgresql"}
+  vars:
+    corpusops_services_db_postgresql_do_preprequisites: false
+    corpusops_services_db_postgresql_do_configuration: false
+    corpusops_services_db_postgresql_do_wrappers: false
+    corpusops_services_db_postgresql_do_services: true
+    corpusops_services_db_postgresql_do_fix_encoding: true
+- include_role: {name: "corpusops.roles/services_db_postgis"}
+  when:
+  - "cops_postgresql_vars.do_install_postgis"
+  vars:
+    corpusops_services_db_postgis_do_prerequisistes: false
+    corpusops_services_db_postgis_do_configuration: false
+    corpusops_services_db_postgis_do_postgis: true
 - include_tasks: _role.yml
   with_items: "{{cops_postgresql_vars._roles}}"
   loop_control: {loop_var: role_item}

@@ -22,3 +22,21 @@
             cops_postgresql_vars.rh_packages is not none and
             cops_postgresql_vars.rh_packages|length > 0)"
     with_items: "{{cops_postgresql_vars.rh_packages}}"
+
+# Setup/Install postgresql
+- include_role: {name: "corpusops.roles/services_db_postgresql"}
+  vars:
+    corpusops_services_db_postgresql_do_preprequisites: true
+    corpusops_services_db_postgresql_do_configuration: false
+    corpusops_services_db_postgresql_do_wrappers: false
+    corpusops_services_db_postgresql_do_services: false
+    corpusops_services_db_postgresql_do_fix_encoding: false
+
+# Setup/Install postgis
+- include_role: {name: "corpusops.roles/services_db_postgis"}
+  when:
+  - "cops_postgresql_vars.do_install_postgis"
+  vars:
+    corpusops_services_db_postgis_do_prerequisistes: true
+    corpusops_services_db_postgis_do_configuration: false
+    corpusops_services_db_postgis_do_postgis: false

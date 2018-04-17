@@ -2,9 +2,22 @@
 # Setup/Install postgresql
 - include_role: {name: "corpusops.roles/services_db_postgresql"}
   tags: ["cops_postgresql_s_setup_server_postgresql"]
-  when: ["cops_postgresql_s_setup_server_postgresql"]
+  when:
+  - "cops_postgresql_s_setup_server_postgresql"
+  vars:
+    corpusops_services_db_postgresql_do_preprequisites: false
+    corpusops_services_db_postgresql_do_configuration: true
+    corpusops_services_db_postgresql_do_wrappers: true
+    corpusops_services_db_postgresql_do_services: false
+    corpusops_services_db_postgresql_do_fix_encoding: false
 
 # Setup/Install postgis
 - include_role: {name: "corpusops.roles/services_db_postgis"}
-  when: ["cops_postgresql_s_setup_server_postgis and cops_postgresql_vars.do_install_postgis"]
+  when:
+  - "cops_postgresql_s_setup_server_postgis"
+  - "cops_postgresql_vars.do_install_postgis"
   tags: ["cops_postgresql_s_setup_server_postgis"]
+  vars:
+    corpusops_services_db_postgis_do_prerequisistes: false
+    corpusops_services_db_postgis_do_configuration: true
+    corpusops_services_db_postgis_do_postgis: false
