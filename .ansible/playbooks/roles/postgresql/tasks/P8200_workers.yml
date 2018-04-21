@@ -3,14 +3,14 @@
   tags: ["cops_postgresql_s_workers_service"]
   block:
   # activate the main app service
-  - service:
+  - cops_service:
       state: "{{cops_postgresql_vars.activated | ternary('started', 'stopped')}}"
       enabled: "{{cops_postgresql_vars.activated | ternary(True, False)}}"
       name: "{{item}}"
     with_items: "{{cops_postgresql_vars.services}}"
   # this will fail on non systemd hosts on purpose !
   # if we have activated the reconfigure units (docker mode essentially)
-  - systemd:
+  - cops_service:
       enabled: "{{cops_postgresql_vars.activated | ternary(True, False)}}"
       daemon_reload: yes
       name: "{{item}}"
