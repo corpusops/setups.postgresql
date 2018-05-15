@@ -11,6 +11,7 @@ cops_postgresql_conf: []
 #- maintenance_work_mem = 960MB
 #- effective_cache_size = 11GB
 #- checkpoint_completion_target = 0.9
+cops_dbsmartbackup_project_dir: "{{vars['cops_dbsmartbackup_projects_dir']}}/{{vars['cops_dbsmartbackup_name']}}"
 #- constraint_exclusion = on
 # users than have full right to edit file in the container
 # When this is enabled, the project user/group is also granted full perms
@@ -33,11 +34,11 @@ cops_postgresql_do_install_postgis: |-
   {% set e = ansible_env.get('COPS_IMG', '') %}
   {% if 'postgis' in e %}True{% else %}False{% endif %}
 cops_postgresql_version: |-
-  {% set v = '{0}'.format(
-    ansible_env.get(
-      'COPS_IMGVER',
-      corpusops_services_db_postgresql_vars.version)
-  )[:3] %}{{v}}
+  {%- if 'COPS_IMG' in ansible_env %}
+  {%- set v = ansible_env.COPS_IMG.split(':')[1].replace('-dev', '') %}
+  {%- else %}
+  {%- set v = corpusops_services_db_postgresql_vars.version %}
+  {%- endif %}{{v}}
 cops_postgresql_deb_packages:
     - jq
 cops_postgresql_rh_packages: [jq]
@@ -53,7 +54,8 @@ cops_postgresql_name: 'postgresql'
 cops_postgresql_user: "{{vars['cops_postgresql_name']}}-user"
 cops_postgresql_group: "{{vars['cops_postgresql_name']}}-group"
 cops_postgresql_projects_dir: "{{corpusops_vars.projects_path}}"
-cops_postgresql_project_dir: "{{vars['cops_postgresql_projects_dir']}}/{{vars['cops_postgresql_name']}}"
+cops_postgresql_project_sdir: "{{vars['cops_postgresql_name']}}"
+cops_postgresql_project_dir: "{{vars['cops_postgresql_projects_dir']}}/{{vars['cops_postgresql_project_sdir']}}"
 cops_postgresql_project_root: "{{vars['cops_postgresql_project_dir']}}/project"
 cops_postgresql_data_root: "{{vars['cops_postgresql_project_dir']}}/data"
 cops_postgresql_cfg: "{{vars['cops_postgresql_data_root']}}/config"
@@ -72,86 +74,28 @@ cops_postgresql_cops_sub_namespaces:
   s: {}
   lifecycle: {}
   force: {}
-  dbsmartbackup: {}
 cops_postgresql_postgresql_bind_host: '127.0.0.1'
 # templates
 ## entry point
 cops_postgresql_provision_dir: /provision_dir
-cops_postgresql_ep_ansible_args: >-
- -e "cops_cwd={{vars['cops_postgresql_provision_dir']}}"
- -e "cops_playbooks=${COPS_ROOT}/playbooks/corpusops"
- -e "cops_path=${COPS_ROOT}"
-cops_postgresql_ep_vaults:
-  - "{{vars['cops_postgresql_provision_dir']}}/.ansible/vaults/default.yml"
-  - "{{vars['cops_postgresql_provision_dir']}}/.ansible/vaults/app.yml"
-  - "{{vars['cops_postgresql_provision_dir']}}/.ansible/vaults/docker.yml"
-  - /setup/reconfigure.yml
 cops_postgresql_ep_template: "../templates/app_entry_point"
+cops_postgresql_ep_playbook: ".ansible/playbooks/site.yml"
+cops_postgresql_ep_main_ep: "/entry_point"
 # Docker entrypoint settings, tags for cli and vars for playbook reuse via
 # conditionals
-cops_postgresql_ep_folder: ".ansible"
-cops_postgresql_ep_playbook: "site.yml"
-cops_postgresql_ep_skip_tags: "{{(
-  'cops_postgresql_lifecycle_app_push_code,'
-  'cops_postgresql_s_users,'
-  'cops_postgresql_s_first_fixperms,'
-  'cops_postgresql_s_prerequisites,'
-  'cops_postgresql_s_setup_sysctls,'
-  'cops_postgresql_s_setup_server,'
-  'cops_postgresql_s_entry_point,'
-  'cops_postgresql_s_workers,'
-  'cops_postgresql_s_managecontent,'
-  'cops_postgresql_s_end_fixperms,'
-  )}}"
-cops_postgresql_ep_post_start_skip_tags: "{{(
-  'cops_postgresql_lifecycle_app_push_code,'
-  'cops_postgresql_s_users,'
-  'cops_postgresql_s_first_fixperms,'
-  'cops_postgresql_s_prerequisites,'
-  'cops_postgresql_s_setup,'
-  'cops_postgresql_s_entry_point,'
-  )}}"
 # global orchestration steps (db, code sync, web & workers prereqs, postgresql config)
 cops_postgresql_become: true
-cops_postgresql_lifecycle_app: true
-cops_postgresql_lifecycle_app_push_code: true
-cops_postgresql_lifecycle_app_setup: true
-# postgresql & project deployment steps
-cops_postgresql_s_vars: true
-
-cops_postgresql_s_entry_point: true
-cops_postgresql_s_users: true
-cops_postgresql_s_users_group: true
-cops_postgresql_s_users_user: true
-cops_postgresql_s_first_fixperms: true
-cops_postgresql_s_fixperms_configs: true
-cops_postgresql_s_fixperms_run: true
-cops_postgresql_s_layout: true
-cops_postgresql_s_layout_layout: true
-cops_postgresql_s_prerequisites: true
-cops_postgresql_s_prerequisites_pkgs: true
-cops_postgresql_s_setup: true
-cops_postgresql_s_setup_sysctls: true
-cops_postgresql_s_setup_server: true
-cops_postgresql_s_setup_server_postgis: true
-cops_postgresql_s_setup_server_postgresql: true
-cops_postgresql_s_setup_configs: true
-cops_postgresql_s_workers_service: true
-cops_postgresql_s_workers_checks: true
-cops_postgresql_s_end_fixperms: true
-cops_postgresql_s_managecontent: true
-cops_postgresql_s_managecontent_databases: true
-cops_postgresql_s_managecontent_privs: true
-cops_postgresql_s_managecontent_roles: true
-#
-cops_postgresql_ep_main_ep: "/entry_point"
 # service
 cops_postgresql_service: "postgresql"
 cops_postgresql_services: ["{{vars['cops_postgresql_service']}}"]
-cops_postgresql_rhandlers: [restart_cops_postgresql]
+cops_postgresql_rhandlers: [reload_cops_postgresql]
 # use in docker (via a vault):
-cops_postgresql_reconfigure_services: []
-# cops_postgresql_reconfigure_services: ["post-start-{{vars['cops_postgresql_service']}}"]
+cops_postgresql_reconfigure_services: |-
+  {% set ret = [] %}
+  {% if ansible_virtualization_type in ['docker'] %}
+  {% set _ = ret.append("post-start-{{vars['cops_postgresql_service']}}") %}
+  {% endif %}
+  {{ ret | to_json }}
 cops_postgresql_activated: true
 # Layout, files & configs
 cops_postgresql_stickymode: "2"
@@ -197,14 +141,18 @@ cops_postgresql_ep_configs:
      dest: "/app_entry_point", mode: "0755",
      owner: root, group: root}
 # SystemD based reconfigure unit settings
-cops_postgresql_reconfigure_service_stderr: ""
-cops_postgresql_reconfigure_service_stdout: ""
+cops_postgresql_reconfigure_service_stderr: "journal{% if ansible_virtualization_type in ['docker']%}+console{%endif%}"
+cops_postgresql_reconfigure_service_stdout: "journal{% if ansible_virtualization_type in ['docker']%}+console{%endif%}"
 cops_postgresql_reconfigure_unit_after: "network.target postgresql.service"
 cops_postgresql_reconfigure_install_wantedby: "multi-user.target"
-cops_postgresql_reconfigure: "{{vars['cops_postgresql_project_dir']}}/reconfigure.sh"
-cops_postgresql_reconfigure_passenv: "ANSIBLE_PLAY ANSIBLE_FOLDER COPS_ROOT"
+cops_postgresql_reconfigure: "{{vars['cops_postgresql_provision_dir']}}/reconfigure.sh"
+cops_postgresql_reconfigure_passenv: >
+  COPS_ROOT COPS_IMG NO_SILENT NO_OUTPUT NONINTERACTIVE
+  ANSIBLE_CWD ANSIBLE_PLAY ANSIBLE_VARARGS ANSIBLE_ARGS
+  A_VAULTS_FOLDERS A_VAULTS A_EXTRA_VAULTS
+  A_INVENTORY A_ENV_NAME NO_DEFAULT_VAULTS
 cops_postgresql_reconfigure_verbosity: "-v"
-# Code synchronnisation settings
+# Code synchronnisation settings (FORCE_COPS_PROVISION_PUSH_CODE to force)
 cops_postgresql_push_codes_cwd: "{{vars['cops_cwd']}}"
 cops_postgresql_push_codes_sync_mode: "{{ (
   cops_installer_mode in ['vagrant'] or
@@ -227,10 +175,6 @@ cops_postgresql_push_codes:
   file_tests: "{{cops_postgresql_push_codes_file_tests[cops_postgresql_push_codes_sync_mode]}}"
   owner: "{{vars['cops_postgresql_user']}}"
   group: "{{vars['cops_postgresql_group']}}"
-  sub_paths:
-  - path: local/setups.postgresql
-    rsync_opts: "{{cops_postgresql_push_codes_rsync_submodule_opts[cops_postgresql_push_codes_sync_mode]}}"
-    is_submodule: true
 # SSH deploy settings -> env vault
 cops_deploy_ssh_key_paths:
   deploy:
@@ -241,18 +185,3 @@ cops_deploy_ssh_key_paths:
     private: "{{cops_deploy_ssh_key|default('')}}"
     # -----BEGIN RSA PRIVATE KEY-----
     # -----END RSA PRIVATE KEY-----
-# backup settings for database
-# cops_postgresql_dbsmartbackup_conf: "/etc/dbsmartbackup/{{vars['cops_postgresql_name']}}.conf"
-# cops_postgresql_dbsmartbackup_cron_mailto: ""
-# cops_postgresql_dbsmartbackup_backup_path_prefix: "/srv/backups"
-# cops_postgresql_dbsmartbackup_global_backup: ""
-# cops_postgresql_dbsmartbackup_servername: "{{ansible_fqdn}}"
-# cops_postgresql_dbsmartbackup_keep_lasts: 3
-# cops_postgresql_dbsmartbackup_keep_days: 3
-# cops_postgresql_dbsmartbackup_keep_weeks: 0
-# cops_postgresql_dbsmartbackup_keep_monthes: 0
-# cops_postgresql_dbsmartbackup_keep_logs: 7
-# cops_postgresql_dbsmartbackup_dbnames: all
-# cops_postgresql_dbsmartbackup_dbexclude: ''
-# cops_postgresql_dbsmartbackup_cron: "0 3 * * * root /srv/apps/dbsmartbackup/run_dbsmartbackup.sh {dbsmartbackup_conf} --quiet --no-colors"
-# vim:set ft=sls:

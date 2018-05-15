@@ -8,7 +8,7 @@
 
 - listen: restart_cops_postgresql
   become: true
-  systemd:
+  cops_service:
     daemon_reload: yes
     state: restarted
     name: "{{item}}"
@@ -18,7 +18,7 @@
           (ansible_service_mgr == 'systemd'))"
 - listen: restart_cops_postgresql
   become: true
-  service:
+  cops_service:
     state: restarted
     name: "{{item}}"
   with_items: "{{cops_postgresql_vars.services}}"
@@ -27,7 +27,7 @@
           (ansible_service_mgr != 'systemd'))"
 - listen: reload_cops_postgresql
   become: true
-  systemd:
+  cops_service:
     daemon_reload: yes
     state: reloaded
     name: "{{item}}"
@@ -37,7 +37,7 @@
           (ansible_service_mgr == 'systemd'))"
 - listen: reload_cops_postgresql
   become: true
-  service:
+  cops_service:
     state: reloaded
     name: "{{item}}"
   with_items: "{{cops_postgresql_vars.services}}"

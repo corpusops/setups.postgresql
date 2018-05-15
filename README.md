@@ -65,10 +65,7 @@ This repository produces all those docker images:
     cops_postgresql__roles:
     - name: dbuser
       # generate/use password inside file: ./local/config/pwd_dbuser
-      password: "{{
-          lookup('password',
-                 (cops_postgresql_cfg+'/pwd_dbuser '
-                  'length=15 chars=ascii_letters,digits')) }}"
+      password: secret47EE9Ebkn2qQf9N__CHANGEME
     cops_postgresql__databases:
     - db: db
       template: postgis
@@ -106,22 +103,12 @@ This repository produces all those docker images:
 
 #### Initialise user data volumes
 - You need to preseed some volumes from your image before running it
-    - db
-
-        ```sh
-        mkdir -p local/db
-        docker run --rm  -v $PWD/local/db:/ldb --entrypoint rsync \
-            corpusops/postgresql:9.6.5 \
-            "/var/lib/postgresql/" "/ldb/" \
-           -av --delete
-        ```
-
     - data
 
         ```sh
         mkdir -p local/data
         docker run --rm  -v $PWD/local/data:/ldata --entrypoint rsync \
-            corpusops/postgresql:9.6.5 \
+            corpusops/postgresql:10 \
             "/srv/projects/postgresql/data/" "/ldata/" \
             -av --delete --exclude "pwd_*" --delete-excluded
         ```
@@ -134,17 +121,20 @@ This repository produces all those docker images:
 
     ```sh
     # docker pull corpusops/postgresql:<TAG>
-    docker pull corpusops/postgresql:9.6.5
+    # docker pull corpusops/postgis:<TAG>
+    docker pull corpusops/postgresql:10
     docker run \
       --name=my-postgresql-container \
+      --tmpfs /run/lock --tmpfs /run \
       -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-      -v $(pwd)/local/setup:/setup:ro \
+      -v $(pwd)/local/setup:/setup \
       -v "$(pwd)/local/data:/srv/projects/postgresql/data" \
       -v "$(pwd)/local/db:/var/lib/postgresql" \
       --security-opt seccomp=unconfined \
-      -P -d -i -t corpusops/postgresql:9.6.5
+      -P -d -i -t corpusops/postgresql:10
     ```
-
+- You are greatly encouraged to use ``docker-compose`` and 
+  inspire yourself of the [compose files](docker-compose.yml) [2](docker-compose-dev.yml) providen in this repository
 - In development, you can add the following knob to indicate that you want to
   edit files.
 
@@ -153,9 +143,9 @@ This repository produces all those docker images:
     ```
 
 ### Build this image
-- Install ``hashicorp/packer`` && ``docker``
+- Install ``docker``
 - get the code
-- run ``./bin/build.sh``
+- run ``.ansible/scripts/build_docker_images.sh``
 
 ### Image provision notes
 - See ``.ansible``, the image is (re)-configured using ansible.

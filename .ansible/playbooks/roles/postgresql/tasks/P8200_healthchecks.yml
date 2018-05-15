@@ -1,0 +1,15 @@
+---
+# check pg is running
+- tags: [cops_postgresql_s_healthchecks]
+  when: [cops_postgresql_s_healthchecks]
+  block:
+  - shell: |
+      echo "select 1"| psql -v ON_ERROR_STOP=1 -t -A -F",":
+    when: "(corpusops_vars.has_services_manager and
+            cops_postgresql_vars.activated)"
+    register: cops_postgresql_check
+    until: "'1' == cops_postgresql_check.stdout"
+    retries: 10
+    delay: 1
+    become: true
+    become_user: postgres

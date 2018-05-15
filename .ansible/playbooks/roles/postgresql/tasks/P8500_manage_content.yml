@@ -6,25 +6,29 @@
     corpusops_services_db_postgresql_do_wrappers: false
     corpusops_services_db_postgresql_do_services: true
     corpusops_services_db_postgresql_do_fix_encoding: true
+  when: [cops_postgresql_s_manage_content_fixencoding]
+  tags: [cops_postgresql_s_manage_content_fixencoding]
 - include_role: {name: "corpusops.roles/services_db_postgis"}
   when:
   - "cops_postgresql_vars.do_install_postgis"
+  - "cops_postgresql_s_manage_content_postgis"
   vars:
     corpusops_services_db_postgis_do_prerequisistes: false
     corpusops_services_db_postgis_do_configuration: false
     corpusops_services_db_postgis_do_postgis: true
+  tags: [cops_postgresql_s_manage_content_postgis]
 - include_tasks: _role.yml
   with_items: "{{cops_postgresql_vars._roles}}"
   loop_control: {loop_var: role_item}
-  when: [cops_postgresql_s_managecontent_roles]
-  tags: [cops_postgresql_s_managecontent_roles]
+  when: [cops_postgresql_s_manage_content_roles]
+  tags: [cops_postgresql_s_manage_content_roles]
 - include_tasks: _db.yml
   with_items: "{{cops_postgresql_vars._databases}}"
   loop_control: {loop_var: db_item}
-  tags: [cops_postgresql_s_managecontent_databases]
-  when: [cops_postgresql_s_managecontent_databases]
+  tags: [cops_postgresql_s_manage_content_databases]
+  when: [cops_postgresql_s_manage_content_databases]
 - include_tasks: _privs.yml
   with_items: "{{cops_postgresql_vars._privs}}"
   loop_control: {loop_var: priv_item}
-  tags: [cops_postgresql_s_managecontent_privs]
-  when: [cops_postgresql_s_managecontent_privs]
+  tags: [cops_postgresql_s_manage_content_privs]
+  when: [cops_postgresql_s_manage_content_privs]

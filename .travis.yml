@@ -14,54 +14,22 @@ env:
       release="$COPS_ROOT/hacking/docker_release" \
       silent_rm="$silent rm -rf"
   matrix:
-    - |
-      __VERSION__="9.6.5" \
-      IMAGE="packer__${__VERSION__}.json"  \
-      DOCKER_IMAGE="corpusops/${__NAME__}:${__VERSION__}"
-    - |
-      __VERSION__="9.5.9" \
-      IMAGE="packer__${__VERSION__}.json"  \
-      DOCKER_IMAGE="corpusops/${__NAME__}:${__VERSION__}"
-    - |
-      __VERSION__="9.4.14" \
-      IMAGE="packer__${__VERSION__}.json"  \
-      DOCKER_IMAGE="corpusops/${__NAME__}:${__VERSION__}"
-    - |
-      __VERSION__="9.3.19" \
-      IMAGE="packer__${__VERSION__}.json"  \
-      DOCKER_IMAGE="corpusops/${__NAME__}:${__VERSION__}"
-    - |
-      __VERSION__="9.2.23" \
-      IMAGE="packer__${__VERSION__}.json"  \
-      DOCKER_IMAGE="corpusops/${__NAME__}:${__VERSION__}"
-    - |
-      __NAME__="postgis" \
-      __VERSION__="9.6.5" \
-      IMAGE="packer__postgis-${__VERSION__}.json"  \
-      DOCKER_IMAGE="corpusops/postgis:${__VERSION__}"
-    - |
-      __NAME__="postgis" \
-      __VERSION__="9.5.9" \
-      IMAGE="packer__postgis-${__VERSION__}.json"  \
-      DOCKER_IMAGE="corpusops/postgis:${__VERSION__}"
-    - |
-      __NAME__="postgis" \
-      __VERSION__="9.4.14" \
-      IMAGE="packer__postgis-${__VERSION__}.json"  \
-      DOCKER_IMAGE="corpusops/postgis:${__VERSION__}"
-    - |
-      __NAME__="postgis" \
-      __VERSION__="9.3.19" \
-      IMAGE="packer__postgis-${__VERSION__}.json"  \
-      DOCKER_IMAGE="corpusops/postgis:${__VERSION__}"
-    - |
-      __NAME__="postgis" \
-      __VERSION__="9.2.23" \
-      IMAGE="packer__postgis-${__VERSION__}.json"  \
-      DOCKER_IMAGE="corpusops/postgis:${__VERSION__}"
+    - IMAGES="corpusops/postgresql:9.6"
+    - IMAGES="corpusops/postgresql:9.5"
+    - IMAGES="corpusops/postgresql:9.4"
+    - IMAGES="corpusops/postgresql:9.3"
+    - IMAGES="corpusops/postgresql:9.2"
+    - IMAGES="corpusops/postgresql:10"
+    - IMAGES="corpusops/postgis:9.6"
+    - IMAGES="corpusops/postgis:9.5"
+    - IMAGES="corpusops/postgis:9.4"
+    - IMAGES="corpusops/postgis:9.3"
+    - IMAGES="corpusops/postgis:9.2"
+    - IMAGES="corpusops/postgis:10"
 language: python
 python: "2.7"
 before_install:
+  - exit 1
   - sudo apt-get update -qq
   - sudo service docker stop
   - .ansible/scripts/download_corpusops.sh
@@ -70,15 +38,18 @@ install:
   - sh -c "$apply_role $COPS_ROOT/roles/corpusops.roles/localsettings_packer/role.yml"
   - sh -c "$apply_role $COPS_ROOT/roles/corpusops.roles/services_virt_docker/role.yml"
 script:
-  - $silent .ansible/scripts/build_docker_images.sh --images $IMAGE
+  - set -e;for i in $IMAGES;do $silent .ansible/scripts/build_docker_images.sh --images $i;done
 after_success:
   - docker images
   - |
-    if [ "x$RELEASE_DEBUG" = "x" ];then
-      DEBUG=1 $funcs vv $release $DOCKER_IMAGE
-    else
-      $silent $release $DOCKER_IMAGE
-    fi
+    set -e;
+    for i in $IMAGES;do
+     if [ "x$RELEASE_DEBUG" = "x" ];then
+       DEBUG=1 $funcs vv $release $i
+     else
+       $silent $release $i
+     fi
+    done
 cache:
   directories:
     - $HOME/.cache/pip

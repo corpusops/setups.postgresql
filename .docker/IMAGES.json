@@ -1,51 +1,80 @@
 {
-  "images": [
-    {
-      "builder_type": "packer",
-      "version": "9.6.5",
-      "name": "postgis"
-    },
-    {
-      "builder_type": "packer",
-      "version": "9.5.9",
-      "name": "postgis"
-    },
-    {
-      "builder_type": "packer",
-      "version": "9.4.14",
-      "name": "postgis"
-    },
-    {
-      "builder_type": "packer",
-      "version": "9.3.19",
-      "name": "postgis"
-    },
-    {
-      "builder_type": "packer",
-      "version": "9.2.23",
-      "name": "postgis"
-    },
+    "images": [
+        {
+            "tag": "corpusops/postgis:10",
+            "builder_type": "docker",
+            "dockerfile": "Dockerfile",
+            "extra_args": "--build-arg COPS_IMG={tag}"
+        },
+        {
+            "tag": "corpusops/postgis:9.6",
+            "builder_type": "docker",
+            "dockerfile": "Dockerfile",
+            "extra_args": "--build-arg COPS_IMG={tag}"
+        },
+        {
+            "tag": "corpusops/postgis:9.5",
+            "builder_type": "docker",
+            "dockerfile": "Dockerfile",
+            "extra_args": "--build-arg COPS_IMG={tag}"
+        },
+        {
+            "tag": "corpusops/postgis:9.4",
+            "builder_type": "docker",
+            "dockerfile": "Dockerfile",
+            "extra_args": "--build-arg COPS_IMG={tag}"
+        },
+        {
+            "tag": "corpusops/postgis:9.3",
+            "builder_type": "docker",
+            "dockerfile": "Dockerfile",
+            "extra_args": "--build-arg COPS_IMG={tag}"
+        },
+        {
+            "tag": "corpusops/postgis:9.2",
+            "builder_type": "docker",
+            "dockerfile": "Dockerfile",
+            "extra_args": "--build-arg COPS_IMG={tag}"
+        },
 
 
-    {
-      "builder_type": "packer",
-      "file": "9.6.5.json"
-    },
-    {
-      "builder_type": "packer",
-      "file": "9.5.9.json"
-    },
-    {
-      "builder_type": "packer",
-      "file": "9.4.14.json"
-    },
-    {
-      "builder_type": "packer",
-      "file": "9.3.19.json"
-    },
-    {
-      "builder_type": "packer",
-      "file": "9.2.23.json"
-    }
-  ]
+
+        {
+            "tag": "corpusops/postgresql:10",
+            "builder_type": "docker",
+            "dockerfile": "Dockerfile",
+            "extra_args": "--build-arg COPS_IMG={tag}"
+        },
+        {
+            "tag": "corpusops/postgresql:9.6",
+            "builder_type": "docker",
+            "dockerfile": "Dockerfile",
+            "extra_args": "--build-arg COPS_IMG={tag}"
+        },
+        {
+            "tag": "corpusops/postgresql:9.5",
+            "builder_type": "docker",
+            "dockerfile": "Dockerfile",
+            "extra_args": "--build-arg COPS_IMG={tag}"
+        },
+        {
+            "tag": "corpusops/postgresql:9.4",
+            "builder_type": "docker",
+            "dockerfile": "Dockerfile",
+            "extra_args": "--build-arg COPS_IMG={tag}"
+        },
+        {
+            "tag": "corpusops/postgresql:9.3",
+            "builder_type": "docker",
+            "dockerfile": "Dockerfile",
+            "extra_args": "--build-arg COPS_IMG={tag}"
+        },
+        {
+            "tag": "corpusops/postgresql:9.2",
+            "builder_type": "docker",
+            "dockerfile": "Dockerfile",
+            "extra_args": "--build-arg COPS_IMG={tag}"
+        }
+
+    ]
 }

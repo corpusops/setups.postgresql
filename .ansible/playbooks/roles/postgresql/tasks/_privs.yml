@@ -1,5 +1,7 @@
 ---
 - debug: {msg: "{{priv_item}}"}
   register: priv_itemr
+  no_log: "{{not (cops_secret_vars_debug|default(false))}}"
 - include_role: {name: corpusops.roles/postgresql_privs}
   vars: {_cops_postgresql_privs: "{{priv_itemr.msg}}"}
+  no_log: "{{not (cops_secret_vars_debug|default(false))}}"

@@ -1,6 +1,9 @@
 ---
 - tags: [cops_postgresql, postgresql]
   block:
+  - include_tasks: P1000_docker_reconfigure.yml
+    tags: [cops_postgresql_s_docker_reconfigure]
+    when: [cops_postgresql_s_docker_reconfigure]
   - include_tasks: P1000_users.yml
     tags: [cops_postgresql_s_users]
     when: [cops_postgresql_s_users]
@@ -22,9 +25,12 @@
   - include_tasks: P8200_workers.yml
     tags: [cops_postgresql_s_workers]
     when: [cops_postgresql_s_workers]
+  - include_tasks: P8200_healthchecks.yml
+    tags: [cops_postgresql_s_healthchecks]
+    when: [cops_postgresql_s_healthchecks]
   - include_tasks: P8500_manage_content.yml
-    tags: [cops_postgresql_s_managecontent]
-    when: [cops_postgresql_s_managecontent]
+    tags: [cops_postgresql_s_manage_content]
+    when: [cops_postgresql_s_manage_content]
   - include_tasks: G9000_fixperms.yml
     tags: [cops_postgresql_s_end_fixperms]
     when: [cops_postgresql_s_end_fixperms]
