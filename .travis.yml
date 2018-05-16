@@ -29,7 +29,6 @@ env:
 language: python
 python: "2.7"
 before_install:
-  - exit 1
   - sudo apt-get update -qq
   - sudo service docker stop
   - .ansible/scripts/download_corpusops.sh
