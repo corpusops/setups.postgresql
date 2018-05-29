@@ -137,7 +137,7 @@ cops_postgresql_ep_configs:
      mode: "0644",
      owner: "root",
      group: "root"}
-  - {src: "{ep_template}",
+  - {src: "{{vars['cops_postgresql_ep_template']}}",
      dest: "/app_entry_point", mode: "0755",
      owner: root, group: root}
 # SystemD based reconfigure unit settings
