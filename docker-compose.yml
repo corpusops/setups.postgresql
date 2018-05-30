@@ -41,6 +41,7 @@ x-image: &image_template
   # systemd
   - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   # data
+  - "./local/setup:/setup"
   - "./local/data/postgresql:/var/lib/postgresql"
   - "./local/data/logs/postgresql:/var/log/postgresql"
   # Remember: /setup/rootfs/ is synced inside the container /

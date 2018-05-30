@@ -1,5 +1,4 @@
-# docker build --squash -t <your/project> . -f Dockerfile --build-arg=SKIP_COPS_UPDATE=y
-#FROM corpusops/postgresql
+# docker build --squash -t corpusops/postgresql:10 . -f Dockerfile --build-arg=SKIP_COPS_UPDATE=y --build-arg=COPS_IMG=corpusops/postgresql:10
 FROM corpusops/ubuntu:16.04
 # Rewarm apt cache
 RUN bash -c '\
