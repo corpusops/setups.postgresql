@@ -107,7 +107,7 @@
       {% set _ = r.update({'cops_postgresql_lifecycle_app': ( cops_postgresql_lifecycle_app_push_code or cops_postgresql_lifecycle_app_setup)}) %}
       {% set cops_postgresql_lifecycle_app = r['cops_postgresql_lifecycle_app'] %}
       #
-      {% set _ = r.update({'cops_postgresql_s_vars': cops_postgresql_s_vars|default(cops_postgresql_lifecycle_app)}) %}
+      {% set _ = r.update({'cops_postgresql_s_vars': cops_postgresql_s_vars|default(cops_postgresql_lifecycle_app) or only_steps}) %}
       {% set cops_postgresql_s_vars = r['cops_postgresql_s_vars'] %}
       #
       {{ r | to_json }}
