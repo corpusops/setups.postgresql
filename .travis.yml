@@ -20,12 +20,12 @@ env:
     - IMAGES="corpusops/postgresql:9.3"
     - IMAGES="corpusops/postgresql:9.2"
     - IMAGES="corpusops/postgresql:10"
-    - IMAGES="corpusops/postgis:9.6"
-    - IMAGES="corpusops/postgis:9.5"
-    - IMAGES="corpusops/postgis:9.4"
-    - IMAGES="corpusops/postgis:9.3"
-    - IMAGES="corpusops/postgis:9.2"
-    - IMAGES="corpusops/postgis:10"
+#   - IMAGES="corpusops/postgis:9.6"
+#   - IMAGES="corpusops/postgis:9.5"
+#   - IMAGES="corpusops/postgis:9.4"
+#   - IMAGES="corpusops/postgis:9.3"
+#   - IMAGES="corpusops/postgis:9.2"
+#   - IMAGES="corpusops/postgis:10"
 language: python
 python: "2.7"
 before_install:
