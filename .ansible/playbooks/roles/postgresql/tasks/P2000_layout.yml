@@ -9,4 +9,4 @@
     owner: "{{item.owner|default(omit)}}"
     group: "{{item.group|default(omit)}}"
     recurse: "{{item.recurse|default(omit)}}"
-  with_items: "{{cops_postgresql_vars.files}}"
+  loop: "{{cops_postgresql_vars.files}}"

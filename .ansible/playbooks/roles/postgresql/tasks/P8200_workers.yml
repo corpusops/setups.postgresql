@@ -4,7 +4,7 @@
     state: "{{cops_postgresql_vars.activated | ternary('started', 'stopped')}}"
     enabled: "{{cops_postgresql_vars.activated | ternary(True, False)}}"
     name: "{{item}}"
-  with_items: "{{cops_postgresql_vars.services}}"
+  loop: "{{cops_postgresql_vars.services}}"
 # force a reload/restart here
 - shell: echo "force service reload/restart"
   notify: "{{cops_postgresql_vars.rhandlers}}"

@@ -9,4 +9,4 @@
     enabled: "{{cops_postgresql_vars.activated | ternary(True, False)}}"
     daemon_reload: yes
     name: "{{item}}"
-  with_items: "{{cops_postgresql_vars.reconfigure_services}}"
+  loop: "{{cops_postgresql_vars.reconfigure_services}}"
