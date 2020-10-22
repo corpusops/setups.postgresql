@@ -20,6 +20,8 @@ env:
     - IMAGES="corpusops/postgresql:9.3"
     - IMAGES="corpusops/postgresql:9.2"
     - IMAGES="corpusops/postgresql:10"
+    - IMAGES="corpusops/postgresql:11"
+    - IMAGES="corpusops/postgresql:12"
 #   - IMAGES="corpusops/postgis:9.6"
 #   - IMAGES="corpusops/postgis:9.5"
 #   - IMAGES="corpusops/postgis:9.4"
