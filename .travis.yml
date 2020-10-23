@@ -1,6 +1,8 @@
 ---
-sudo: required
-dist: trusty
+services: [docker]
+language: python
+dist: focal
+git: {lfs_skip_smudge: true}
 env:
   global:
     - |
@@ -31,13 +33,20 @@ env:
 language: python
 python: "2.7"
 before_install:
-  - sudo apt-get update -qq
-  - sudo service docker stop
-  - .ansible/scripts/download_corpusops.sh
-  - $silent .ansible/scripts/setup_corpusops.sh
-install:
-  - sh -c "$apply_role $COPS_ROOT/roles/corpusops.roles/localsettings_packer/role.yml"
-  - sh -c "$apply_role $COPS_ROOT/roles/corpusops.roles/services_virt_docker/role.yml"
+- sudo apt-get update -qq
+- sudo service docker stop
+- .ansible/scripts/download_corpusops.sh
+- $silent .ansible/scripts/setup_corpusops.sh
+- >
+  sudo bash -exc "python -c
+  \"d='/etc/docker/daemon.json';
+  import json;
+  c = json.load(open(d));
+  c['experimental'] = True;
+  print(c);open(d, 'w').write(json.dumps(c))
+  \"
+  && systemctl restart docker"
+- echo "$DOCKER_PASSWORD" | docker login --password-stdin --username="$DOCKER_RELEASER"
 script:
   - set -e;for i in $IMAGES;do $silent .ansible/scripts/build_docker_images.sh --images $i;done
 after_success:
